@@ -1,0 +1,58 @@
+meta {
+  name: AddNewProvision
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{basicHost}}/control?new
+  body: json
+  auth: inherit
+}
+
+params:query {
+  new: 
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+      "workload_id" : "spiffe://cluster.local/newservice/sa/new",
+      "privileges": [
+          {
+              "audience": "nist-oran",
+              "services": [
+                  {
+                      "srvName": "urn.o-ran.sme",
+                      "roles": "srvquery"
+                  }
+              ]
+          }      
+      ]
+  }
+}
+
+assert {
+  res.status: eq 201
+  res.body: isEmpty
+}
+
+docs {
+  # Provision New ID-Scope Mapping
+  
+  This request adds a new SPIFFE ID and token scope mapping to the authorization server database. The body contains the new mapping as a JSON object. A success should be returned, but no body in the response. 
+  
+  ## Prereqs
+  
+  - The authorization server is up and running
+  - The body is properly formated
+  
+  ## Tests and Checks
+  
+  - Assert that the response code is `201`
+  - Assert that the response body is empty
+  
+}

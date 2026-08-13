@@ -1,0 +1,50 @@
+meta {
+  name: ClientNotFound
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{baseURL}}/token
+  body: formUrlEncoded
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/x-www-form-urlencoded
+  X-Forwarded-Client-Cert: By=spiffe://testbed.local/service;Hash=foobar;extrabit;URI=spiffe://testbed.local/service10;
+  ~X-SME-Forwarded-Client: By=spiffe://testbed.local/service;Hash=foobar;extrabit;URI=spiffe://testbed.local/service10;
+}
+
+body:form-urlencoded {
+  grant_type: client_credentials
+  client_id: spiffe://testbed.local/foobar10
+  client_secret: none
+  scope: *:/token
+}
+
+assert {
+  res.status: eq 404
+  res.body: isJson
+}
+
+tests {
+  test("Check Content-Type", function () {
+    const contentHeader = res.headers['content-type'];
+    expect (contentHeader).to.eql("application/problem+json");
+  });
+  
+  test("Get Correct Error Msg", function () {
+    const data = res.getBody()
+    expect (res.getBody()).to.eql({
+      "error": "unknown_client",
+      "error_description": "Workload not found.",
+      "error_uri": "/oauth2/v1/token"
+    });
+  });
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

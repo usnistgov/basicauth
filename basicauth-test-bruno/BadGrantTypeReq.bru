@@ -1,0 +1,62 @@
+meta {
+  name: BadGrantTypeReq
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseURL}}/token
+  body: formUrlEncoded
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/x-www-form-urlencoded
+  X-Forwarded-Client-Cert: By=spiffe://testbed.local/service;Hash=foobar;extrabit;URI=spiffe://testbed.local/service;
+  ~X-SME-Forwarded-Client: By=spiffe://testbed.local/service;Hash=foobar;extrabit;URI=spiffe://testbed.local/service;
+}
+
+body:form-urlencoded {
+  grant_type: somethingElse
+  client_id: spiffe://testbed.local/service
+  client_secret: none
+  scope: all
+}
+
+assert {
+  res.status: eq 400
+  res.body: isJson
+}
+
+tests {
+  test("Check Content-Type", function () {
+    const contentHeader = res.headers['content-type'];
+    expect (contentHeader).to.eql("application/problem+json");
+  });
+  
+  test("Get Correct Error Msg", function () {
+    const data = res.getBody()
+    expect (res.getBody()).to.eql({
+      "error": "unsupported_grant_type",
+      "error_description": "Grant type not supported - must be 'client_credentials'",
+      "error_uri": "/oauth2/v1/token"
+    });
+  });
+}
+
+docs {
+  # Bad Grant Type Token Reqeust Error
+  
+  This test is for the SME to pass through a bad request for a token to the authorization server. This request does not have the correct grant type, so should return an error message.
+  
+  ## Prereqs
+  - The authorization server must be up and running.
+  - The SME knows the location of the authorization server if in `sme` mode
+  
+  ## Checks and Tests
+  
+  - Assert: response status is `400`
+  - Assert: response body is JSON
+  - Test that the Content-Type is `application/json`
+  - Test that the error response is in correct format
+}

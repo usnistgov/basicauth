@@ -1,0 +1,11 @@
+service:
+  mode: "proxy"
+  issuer: "basicAuth"
+  audience: "nist-smo"
+  privkey: "-----BEGIN EC PRIVATE KEY-----\nMHcCAQEEIDlTt2fEHcr23+9mzqvZ8u4NYRw2VfdR0zEKn71R5t7JoAoGCCqGSM49AwEHoUQDQgAE84iAz7rd/mhJxKSjb0YXd7lPy9ovjNEW9hhnLjaXDvmvc9SS+wkgELVaaNFoH7OQhFt+6r6S6HVy/0nEplibXg==\n-----END EC PRIVATE KEY-----"
+  extkey: "-----BEGIN EC PRIVATE KEY-----\nMHQCAQEEIF9GFwmBpbFl3QZDXII5O1FtYMn0Z5ETx3cvzMbjBVH6oAcGBSuBBAAK\noUQDQgAENNJdYJY7my+pkpg0HEzkEtgXPVoDUkwDSIZdq5uQ+LiqIm877hiWbMmj\nBOqRUt8k+thlB7k9CkN2qp0QD8cqFg==\n-----END EC PRIVATE KEY-----"
+  expiry: "21600"
+addr: "0.0.0.0"
+port: "8800"
+prefix: "/oauth2/v1"
+mapping: "./mappings.json"

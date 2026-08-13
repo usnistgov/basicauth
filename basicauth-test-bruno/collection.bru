@@ -1,0 +1,30 @@
+vars:pre-request {
+  baseURL: http://127.0.0.1:8800/oauth2/v1
+}
+
+docs {
+  # basicauth Test Bruno
+  
+  This is the collection of Bruno tests for the authorization server. There
+  are calls for the various endpoints and include some for error responses.
+  
+  ## TokenReq - Request a Token (presumed successful)
+  
+  This is a request for an Oauth2 token that should succeed if using the default
+  mappings. 
+  
+  ## NoGrant
+  
+  ## BadGrantType
+  
+  ## GetJWKS
+  
+  This is a request for the authorization server's public key. The EC key is
+  returned in JWKS format. See [RFC 7517](https://datatracker.ietf.org/doc/html/rfc7517)
+  
+  ## provision new
+  
+  ## GetProvision
+  
+  
+}

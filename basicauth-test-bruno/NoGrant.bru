@@ -1,0 +1,62 @@
+meta {
+  name: NoGrant
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseURL}}/token
+  body: formUrlEncoded
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/x-www-form-urlencoded
+  X-SME-Forwarded-Client: By=spiffe://testbed.local/service;Hash=foobar;extrabit;URI=spiffe://testbed.local/service;
+  ~X-Forwarded-Client-Cert: By=spiffe://testbed.local/service;Hash=foobar;extrabit;URI=spiffe://testbed.local/service;
+}
+
+body:form-urlencoded {
+  client_id: default
+  client_secret: none
+  scope: any
+}
+
+assert {
+  res.status: eq 400
+  res.body: isJson
+}
+
+tests {
+  test("Check Content-Type", function () {
+    const contentHeader = res.headers['content-type'];
+    expect (contentHeader).to.eql("application/problem+json");
+  });
+  
+  test("Get Correct Error Msg", function () {
+    const data = res.getBody()
+    expect (res.getBody()).to.eql({
+      "error": "unsupported_grant_type",
+      "error_description": "Grant type not supported - must be 'client_credentials'",
+      "error_uri": "/oauth2/v1/token"
+    });
+  });
+}
+
+docs {
+  # Token Request Error - No Grant included
+  
+  This request is a bad token request. It is missing the proper grant in the request body. An error should be returned.
+  
+  ## Prereqs
+  
+  - The authorization server is up and running
+  - The body has the error
+  
+  ## Tests and Checks
+  
+  - Assert: The response code is `400`
+  - Assert: The response body is a JSON object
+  - Test that the Content-Type is `application/json`
+  - Test that the correct JSON error description object is returned.
+}

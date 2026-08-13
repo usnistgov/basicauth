@@ -1,0 +1,57 @@
+meta {
+  name: GetCurrentMappings
+  type: http
+  seq: 8
+}
+
+get {
+  url: {{basicHost}}/control/provision
+  body: none
+  auth: inherit
+}
+
+headers {
+  X-SME-Forwarded-Client: spiffe://testbed.local/service
+}
+
+assert {
+  res.status: eq 200
+  res.body: isJson
+}
+
+tests {
+  test("Check Content-Type", function () {
+    const contentHeader = res.headers['content-type'];
+    expect (contentHeader).to.eql("application/json");
+  });
+  
+  test("Check all defaults returned", function () {
+    const data = res.getBody()
+    expect(data.mappings.length).to.be.at.least(5)
+  });
+  
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
+
+docs {
+  # Get Current Scope Mappings
+  
+  This test is for the SME to pass through the request for the list of current ID:scope mappings to the authorization server. 
+  
+  ## Prereqs
+  
+  - The authorization server must be up and running.
+  - The SME knows the location of the authorization server
+  
+  ## Checks and Tests
+  
+  - Assert: response status is `200`
+  - Assert: response body is JSON
+  - Test that the Content-Type is `application/json`
+  - Test that response contains at least 5 entries
+  - Test that default entry is present
+}

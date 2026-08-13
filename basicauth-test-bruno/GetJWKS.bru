@@ -1,0 +1,58 @@
+meta {
+  name: GetJWKS
+  type: http
+  seq: 7
+}
+
+get {
+  url: {{baseURL}}/jwks
+  body: none
+  auth: inherit
+}
+
+assert {
+  res.status: eq 200
+  res.body: isJson
+}
+
+tests {
+  test("Check Content-Type", function () {
+    const contentHeader = res.headers['content-type'];
+    expect (contentHeader).to.eql("application/json");
+  });
+  
+  test("Get Correct Key", function () {
+    const data = res.getBody()
+    expect (res.getBody()).to.eql({
+      "kty": "EC",
+      "crv": "P-256",
+      "x": "84iAz7rd_mhJxKSjb0YXd7lPy9ovjNEW9hhnLjaXDvk",
+      "y": "r3PUkvsJIBC1WmjRaB-zkIRbfuq-kuh1cv9JxKZYm14",
+      "use": "sig",
+      "kid": "basicauth Token Validation Key"
+    });
+  });
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
+
+docs {
+  # Get JWKS
+  
+  This test is for the SME to pass through the request for the JWKS key to the authorization server. 
+  
+  ## Prereqs
+  
+  - The authorization server must be up and running.
+  - The SME knows the location of the authorization server
+  
+  ## Checks & Tests
+  
+  - Assert: status code is `200`
+  - Assert: response body is JSON
+  - Test that the Content-Type is `application/json`
+  - Test that the JSON object returned is the JWKS for the server.
+}

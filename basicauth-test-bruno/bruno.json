@@ -1,0 +1,27 @@
+{
+  "version": "1",
+  "name": "basicauth-test-bruno",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ],
+  "size": 0.0010690689086914062,
+  "filesCount": 5,
+  "clientCertificates": {
+    "enabled": true,
+    "certs": []
+  },
+  "proxy": {
+    "bypassProxy": "",
+    "enabled": false,
+    "auth": {
+      "enabled": false,
+      "username": "",
+      "password": ""
+    },
+    "port": null,
+    "hostname": "",
+    "protocol": "http"
+  }
+}

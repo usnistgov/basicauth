@@ -1,0 +1,132 @@
+{
+    "mappings": [
+        {
+            "workload_id": "default",
+            "privileges": [
+                {
+                    "audience" : "nist-oran",
+                    "services" : [
+                        {
+                            "srvName" : "any",
+                            "roles" : "all"
+                        }
+                    ]
+                },
+                {
+                    "audience": "external",
+                    "services": [
+                        {
+                            "srvName": "any",
+                            "roles": "all"
+                        }
+                    ]
+                }
+            ] 
+        },
+        {
+            "workload_id": "spiffe://testbed.local/service",
+            "privileges": [
+                {
+                    "audience": "nist-oran",
+                    "services": [
+                        {
+                            "srvName": "urn.o-ran.sme",
+                            "roles": "srvreg srvquery srvupdate srvdelete"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "workload_id": "spiffe://cluster.local/ns/nist-oran/sa/a1term-sa",
+            "privileges": [
+                {
+                    "audience": "nist-oran",
+                    "services": [
+                        {
+                            "srvName": "urn.o-ran.sme",
+                            "roles": "srvreg srvquery srvupdate srvdelete"
+                        },
+                        {
+                            "srvName": "urn.o-ran.teiv",
+                            "roles": "entityquery"
+                        },
+                        {
+                            "srvName": "urn.o-ran.dme",
+                            "roles": "dme-dr-reg-type dme-dr-dreg-type dme-dr-upd-type dme-dr-qry-type"
+                        }
+                    ]
+                },
+                { 
+                    "audience" : "external",
+                    "services" : [
+                        {
+                            "srvName" : "any",
+                            "roles" : "external"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "workload_id" : "spiffe://cluster.local/ns/nist-oran/sa/dme-sa",
+            "privileges": [
+                {
+                    "audience": "nist-oran",
+                    "services": [
+                        {
+                            "srvName": "urn.o-ran.sme",
+                            "roles": "srvreg srvupdate srvdelete"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "workload_id" : "spiffe://cluster.local/ns/nist-oran/sa/teiv-sa",
+            "privileges": [
+                {
+                    "audience": "nist-oran",
+                    "services": [
+                        {
+                            "srvName": "urn.o-ran.sme",
+                            "roles": "srvreg srvupdate srvdelete"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "workload_id" : "spiffe://cluster.local/ns/nist-oran-rapp/sa/evilrapp-sa",
+            "privileges": [
+                {
+                    "audience": "nist-oran",
+                    "services": [
+                        {
+                            "srvName": "urn.o-ran.sme",
+                            "roles": "srvquery"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "workload_id" : "spiffe://cluster.local/ns/nist-oran-rapp/sa/goodrapp-sa",
+            "privileges": [
+                {
+                    "audience": "nist-oran",
+                    "services": [
+                        {
+                            "srvName": "urn.o-ran.sme",
+                            "roles": "srvquery"
+                        },
+                        {
+                            "srvName": "urn.o-ran.a1term",
+                            "roles": "a1-p-crt-policies a1-p-qry-policy-types a1-p-qry-policies a1-p-upd-policies a1-p-del-policies"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

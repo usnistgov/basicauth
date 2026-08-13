@@ -1,0 +1,65 @@
+meta {
+  name: TokenReq
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseURL}}/token
+  body: formUrlEncoded
+  auth: none
+}
+
+headers {
+  Content-Type: application/x-www-form-urlencoded
+  X-SME-Forwarded-Client: By=spiffe://testbed.local/service;Hash=foobar;extrabit;URI=spiffe://testbed.local/service;
+  ~X-Forwarded-Client-Cert: By=spiffe://testbed.local/service;Hash=foobar;extrabit;URI=spiffe://testbed.local/service;
+}
+
+body:form-urlencoded {
+  grant_type: client_credentials
+  client_id: default
+  client_secret: none
+  scope: nist-oran::
+}
+
+assert {
+  res.status: eq 200
+  res.body: isJson
+}
+
+tests {
+  test("Check Content-Type", function () {
+    const contentHeader = res.headers['content-type'];
+    expect (contentHeader).to.eql("application/json");
+  });
+  
+  test("Check Token Values", function () {
+    const data = res.getBody()
+    expect (data.token_type).to.eql("Bearer")
+    expect (data.expires_in).to.eql("21600")
+    expect (data.scope).to.be.a('string')
+    expect (data.access_token).to.be.a('string')
+  });
+}
+
+docs {
+  # Token Request
+  
+  This request is for an Oauth2 token for the given identity. The identity is in the Header as it is expected that the server runs in a K8s environment with a service mesh. Depending on the mode, the header will be different:
+  
+  - in `mesh` mode it should be `X-Forwarded-Client-Cert`
+  - in `sme` mode it should be `X-SME-Forwarded-Client`
+  
+  ## Prereqs
+  
+  - Auth server is up and running
+  - The SPIFFE ID in the header has a scope mapping in the authorization server.
+  
+  ## Checks and Tests
+  
+  - Assert: response code is `200`
+  - Assert: response body is JSON
+  - Test that the JSON object is in the correct format.
+  - Test that the Content-Type is `application/json`
+}
