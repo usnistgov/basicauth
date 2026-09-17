@@ -1,0 +1,8 @@
+service:
+  mode: "test"
+  issuer: "basicauth"
+  audience: "testAudience"
+  expiry: "21600"
+addr: "0.0.0.0"
+port: "8800"
+mapping: "./mappings.json"
