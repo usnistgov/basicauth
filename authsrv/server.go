@@ -35,8 +35,8 @@
  * ChangeLog:
  * -----------------------------------------------------------------------------
  *
- * 0.1  - 2026/0X/XX - scottr
- *            * Created File.
+ * 0.1  - 2026/09/25 - scottr
+ *            * initial release.
  */
 
 package authsrv
