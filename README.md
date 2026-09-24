@@ -1,16 +1,16 @@
 # basicAuth
 
-*An authorization server for prototyping workloads that need simple Oauth2 tokens*
+*An authorization server for prototyping workloads that need simple OAuth2 tokens*
 
 `basicAuth` is a very simple [OAuth2](https://datatracker.ietf.org/doc/html/rfc6750) authorization
 server that issues [bearer JSON web tokens](https://datatracker.ietf.org/doc/html/rfc7519) to workloads. The workload is assumed to have authenticated
-itself via mTLS using a SPIFFE X.509 ID (x509-SVID) using the method described in [Oauth SPIFFE Client Authentication](https://datatracker.ietf.org/doc/draft-ietf-oauth-spiffe-client-auth/)
+itself via mTLS using a SPIFFE X.509 ID (x509-SVID) using the method described in [OAuth SPIFFE Client Authentication](https://datatracker.ietf.org/doc/draft-ietf-Oauth-spiffe-client-auth/)
 
 
 This was originally developed to make a very simple authorization server for an Open RAN (O-RAN) testbed. The roles in the token
 can be encoded at startup. Clients requesting a token will be issued one based on 
 the SPIFFE URI in the peer certificate used for mTLS authentication. The service seeks to follow the 
-O-RAN specification for Oauth2 as described in [O-RAN OAuth 2.0 Security 7.0 Technical Report](https://specifications.o-ran.org/download?id=1077).
+O-RAN specification for OAuth2 as described in [O-RAN OAuth 2.0 Security 7.0 Technical Report](https://specifications.o-ran.org/download?id=1077).
 
 Like any [OAuth2](https://datatracker.ietf.org/doc/html/rfc6750) server, it is an HTTP
 service. A client requests a new token at the `<o-ran prefix>/token`. If successful, a bearer token
