@@ -358,19 +358,7 @@ func Execute() {
 		}
 		caPool := x509.NewCertPool()
 		caPool.AppendCertsFromPEM(localCa)
-		cfg = &tls.Config{
-			MinVersion:               tls.VersionTLS12,
-			InsecureSkipVerify:       true, //REMOVE ONCE THINGS GET WORKING!!!!
-			CurvePreferences:         []tls.CurveID{tls.CurveP521, tls.CurveP384, tls.CurveP256},
-			PreferServerCipherSuites: true,
-			ClientAuth:               tls.RequireAnyClientCert,
-			CipherSuites: []uint16{
-				tls.TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,
-				tls.TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA,
-				tls.TLS_RSA_WITH_AES_256_GCM_SHA384,
-				tls.TLS_RSA_WITH_AES_256_CBC_SHA,
-			},
-		}
+		cfg = buildServerTLSConfig(caPool)
 	}
 
 	// Setting up the routes by creating a new Gorilla MUX router
@@ -410,5 +398,34 @@ func Execute() {
 		}
 		log.Printf("starting http service in mode: %s", srvConfig.Service.Mode)
 		log.Fatal(srv.ListenAndServe())
+	}
+}
+
+// buildServerTLSConfig returns the TLS configuration used for standalone mTLS
+// mode. Client certificates are required and must chain to caPool, since
+// TokenHandler trusts the SPIFFE URI in the peer certificate as the caller's
+// identity for role mapping; accepting any client certificate without
+// verifying it against caPool would let a caller present a self-signed
+// certificate with an arbitrary SPIFFE URI and be issued a token for any role.
+//
+// CurvePreferences leads with the hybrid post-quantum key exchange
+// X25519MLKEM768 (NIST ML-KEM-768 combined with X25519), falling back to
+// classical ECDHE groups for peers that don't yet support it.
+func buildServerTLSConfig(caPool *x509.CertPool) *tls.Config {
+	return &tls.Config{
+		MinVersion: tls.VersionTLS12,
+		ClientAuth: tls.RequireAndVerifyClientCert,
+		ClientCAs:  caPool,
+		CurvePreferences: []tls.CurveID{
+			tls.X25519MLKEM768,
+			tls.X25519,
+			tls.CurveP521,
+			tls.CurveP384,
+			tls.CurveP256,
+		},
+		PreferServerCipherSuites: true,
+		CipherSuites: []uint16{
+			tls.TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,
+		},
 	}
 }
